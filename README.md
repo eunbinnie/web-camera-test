@@ -68,4 +68,3 @@ web-camera-test/
 ├── tsconfig.json
 └── package.json
 ```
-
