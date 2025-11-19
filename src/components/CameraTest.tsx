@@ -3,12 +3,18 @@
 import { useRef } from 'react';
 
 const constraints = {
-  video: { width: 1280, height: 720, facingMode: 'user' },
+  video: { facingMode: 'user' },
   audio: false,
 };
 
 const CameraTest = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const canvas = canvasRef.current;
+  //   canvas!.width = 480;
+  //   canvas!.height = 360;
+
   const handleStartCamera = async () => {
     let stream = null;
 
@@ -24,6 +30,15 @@ const CameraTest = () => {
     }
   };
 
+  const handleTakePhoto = () => {
+    if (!videoRef.current || !canvas) return;
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
+    canvas
+      .getContext('2d')!
+      .drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+  };
+
   return (
     <div>
       <button
@@ -33,7 +48,19 @@ const CameraTest = () => {
       >
         Start Camera
       </button>
-      <video ref={videoRef} />
+      {/* {videoRef.current && ( */}
+      <button
+        type="button"
+        onClick={handleTakePhoto}
+        className="cursor-pointer ml-5 bg-gray-100 py-2 px-4 rounded-md"
+      >
+        촬영
+      </button>
+      {/* )} */}
+      <div className="flex gap-10">
+        <video ref={videoRef} autoPlay playsInline disablePictureInPicture />
+        <canvas ref={canvasRef} className="border-2 border-gray-300" />
+      </div>
     </div>
   );
 };
